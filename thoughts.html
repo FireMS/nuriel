@@ -9,4 +9,30 @@
     }
   </style>
   <div id="draggable"></div>
+  <script>
+    const draggable = document.getElementById('draggable');
+    let offsetX, offsetY;
+    let isDragging = false;
+
+    draggable.addEventListener('mousedown', dragStart);
+    draggable.addEventListener('mouseup', dragEnd);
+
+    function dragStart(event){
+      isDragging = true;
+      offsetX = event.clientX - draggable.getBoundingClientRect().left;
+      offsetY = event.clientY - draggable.getBoundingClientRect().top;
+    }
+    function dragEnd() {
+      isDragging = false;
+    }
+
+    document.addEventListener('mousemove', drag);
+    
+    function drag(event){
+      if(isDragging){
+        draggable.style.left = event.clientX - offsetX + 'px';
+        draggable.style.top = event.clientY - offsetY + 'px';
+      }
+    }
+  </script>
 </html>
