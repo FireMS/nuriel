@@ -16,7 +16,6 @@
   <script>
     const draggable = document.getElementById('draggable');
     const text =  document.getElementById('text');
-    updateTextPosition();
     
     let offsetX, offsetY;
     let isDragging = false;
@@ -39,6 +38,7 @@
         //update text position relative to folder (yes im coding this im not using ai nerd)
         text.style.left = draggable.getBoundingClientRect().left + 'px';
         text.style.top = draggable.getBoundingClientRect().bottom + 'px';
+    }
     
     function drag(event){
       if(isDragging){
