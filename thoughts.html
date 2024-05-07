@@ -11,8 +11,10 @@
     }
     #text {
       position: absolute;
-      top: 110px;
-      left: 50px;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
     }
   </style>
 </head>
@@ -46,8 +48,8 @@
     if (isDragging) {
       folder.style.left = event.clientX - offsetX + 'px';
       folder.style.top = event.clientY - offsetY + 'px';
-      text.style.left = event.clientX - offsetX + 16 + 'px';
-      text.style.top = event.clientY - offsetY + 100 + 'px';
+      text.style.left = event.clientX - offsetX + 'px';
+      text.style.top = event.clientY - offsetY + 70 + 'px';
     }
   }
 </script>
