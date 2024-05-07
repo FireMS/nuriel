@@ -12,10 +12,11 @@
     }
   </style>
   <div id="draggable"></div>
-  <div id="text">advice</div>
+  <div id="text">nu</div>
   <script>
     const draggable = document.getElementById('draggable');
     const text =  document.getElementById('text');
+    updateTextPosition();
     
     let offsetX, offsetY;
     let isDragging = false;
@@ -33,6 +34,10 @@
     }
 
     document.addEventListener('mousemove', drag);
+
+    function updateTextPosition() { //updates text relative to folder
+      text.style.left = draggable.getBoundingClientRect().left + 'px';
+      text.style.top = draggable.getBoundingClientRect().bottom + 'px';
     
     function drag(event){
       if(isDragging){
