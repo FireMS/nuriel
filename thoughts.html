@@ -2,27 +2,24 @@
 <html>
 <head>
   <style>
-    /* Style for the folder */
-    #folder {
-      width: 100px;
-      height: 100px;
+    {
+      width: 64px;
+      height: 56px;
       background-image: url('https://raw.githubusercontent.com/FireMS/nuriel/main/pixelFolder.png');
       background-size: cover;
       position: absolute;
     }
-    
-    /* Style for the text */
-    #text {
+    {
       position: absolute;
       top: 110px;
-      left: 50px; /* Adjust this value based on the text size */
+      left: 50px;
     }
   </style>
 </head>
 <body>
 
 <div id="folder" draggable="true"></div>
-<div id="text">Advice</div>
+<div id="text">advice</div>
 
 <script>
   const folder = document.getElementById('folder');
@@ -31,30 +28,27 @@
   folder.addEventListener('dragstart', dragStart);
 
   function dragStart(event) {
-    // Set the data to be dragged
     event.dataTransfer.setData('text/plain', null);
 
-    // Calculate initial position offsets
     const offsetX = event.clientX - folder.getBoundingClientRect().left;
     const offsetY = event.clientY - folder.getBoundingClientRect().top;
 
-    // Update position while dragging
     document.addEventListener('mousemove', drag);
     document.addEventListener('mouseup', dragEnd);
-
+    
     function drag(event) {
       folder.style.left = event.clientX - offsetX + 'px';
       folder.style.top = event.clientY - offsetY + 'px';
       text.style.left = event.clientX - offsetX + 'px';
-      text.style.top = event.clientY - offsetY + 100 + 'px'; // Adjust for text position
+      text.style.top = event.clientY - offsetY + 100 + 'px';
     }
-
+    
     function dragEnd() {
       document.removeEventListener('mousemove', drag);
       document.removeEventListener('mouseup', dragEnd);
     }
+    
   }
 </script>
-
 </body>
 </html>
