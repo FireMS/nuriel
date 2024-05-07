@@ -14,7 +14,8 @@
       text-align: center;
       width: 100%; /* Ensure text spans the full width */
       top: calc(56px + 10px); /* Adjust based on image height and desired spacing */
-      left: 0;
+      left: 50%;
+      transform: translateX(-50%); /* Center horizontally */
     }
   </style>
 </head>
@@ -34,24 +35,4 @@
 
   function dragStart(event) {
     isDragging = true;
-    offsetX = event.clientX - folder.getBoundingClientRect().left;
-    offsetY = event.clientY - folder.getBoundingClientRect().top;
-  }
-
-  function dragEnd() {
-    isDragging = false;
-  }
-
-  document.addEventListener('mousemove', drag);
-
-  function drag(event) {
-    if (isDragging) {
-      folder.style.left = event.clientX - offsetX + 'px';
-      folder.style.top = event.clientY - offsetY + 'px';
-      text.style.left = event.clientX - folder.offsetWidth / 2 + 'px'; // Center horizontally
-      text.style.top = event.clientY + 10 + 'px'; // Adjust based on desired spacing
-    }
-  }
-</script>
-</body>
-</html>
+    offsetX = event.clientX - folder.ge
