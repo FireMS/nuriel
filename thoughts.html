@@ -2,7 +2,8 @@
 <html>
 <head>
   <style>
-    {
+    /* Style for the folder */
+    #folder {
       width: 100px;
       height: 100px;
       background-image: url('pixelFolder.png');
@@ -14,14 +15,14 @@
     #text {
       position: absolute;
       top: 110px;
-      left: 50px;
+      left: 50px; /* Adjust this value based on the text size */
     }
   </style>
 </head>
 <body>
 
 <div id="folder" draggable="true"></div>
-<div id="text">advice</div>
+<div id="text">Advice</div>
 
 <script>
   const folder = document.getElementById('folder');
