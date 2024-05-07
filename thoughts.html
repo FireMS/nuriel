@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html>
   <style>
-    #draggable {
+    #draggable{
     width: 64px;
     height: 56px;
     background-image: url('https://raw.githubusercontent.com/FireMS/nuriel/main/pixelFolder.png');
     position: absolute;
     }
+    #text{
+      position: absolute;
+    }
   </style>
   <div id="draggable"></div>
+  <div id="text">advice</div>
   <script>
     const draggable = document.getElementById('draggable');
+    const text =  document.getElementById('text');
+    
     let offsetX, offsetY;
     let isDragging = false;
 
@@ -32,6 +38,10 @@
       if(isDragging){
         draggable.style.left = event.clientX - offsetX + 'px';
         draggable.style.top = event.clientY - offsetY + 'px';
+
+        //update text position (yes im coding this im not using ai nerd)
+        text.style.left = draggable.getBoundingClientRect().left + 'px';
+        text.style.top = draggable.getBoundingClientRect().bottom + 'px';
       }
     }
   </script>
