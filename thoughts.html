@@ -35,18 +35,16 @@
 
     document.addEventListener('mousemove', drag);
 
-    function updateTextPosition() { //updates text relative to folder
-      text.style.left = draggable.getBoundingClientRect().left + 'px';
-      text.style.top = draggable.getBoundingClientRect().bottom + 'px';
+    function updateTextPosition() {
+        //update text position relative to folder (yes im coding this im not using ai nerd)
+        text.style.left = draggable.getBoundingClientRect().left + 'px';
+        text.style.top = draggable.getBoundingClientRect().bottom + 'px';
     
     function drag(event){
       if(isDragging){
         draggable.style.left = event.clientX - offsetX + 'px';
         draggable.style.top = event.clientY - offsetY + 'px';
-
-        //update text position (yes im coding this im not using ai nerd)
-        text.style.left = draggable.getBoundingClientRect().left + 'px';
-        text.style.top = draggable.getBoundingClientRect().bottom + 'px';
+        updateTextPosition();
       }
     }
   </script>
