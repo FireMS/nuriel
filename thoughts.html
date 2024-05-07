@@ -2,14 +2,14 @@
 <html>
 <head>
   <style>
-    {
+    #folder {
       width: 64px;
       height: 56px;
       background-image: url('https://raw.githubusercontent.com/FireMS/nuriel/main/pixelFolder.png');
       background-size: cover;
       position: absolute;
     }
-    {
+    #text {
       position: absolute;
       top: 110px;
       left: 50px;
@@ -18,36 +18,37 @@
 </head>
 <body>
 
-<div id="folder" draggable="true"></div>
+<div id="folder"></div>
 <div id="text">advice</div>
 
 <script>
   const folder = document.getElementById('folder');
   const text = document.getElementById('text');
+  let isDragging = false;
+  let offsetX, offsetY;
 
-  folder.addEventListener('dragstart', dragStart);
+  folder.addEventListener('mousedown', dragStart);
+  folder.addEventListener('mouseup', dragEnd);
 
   function dragStart(event) {
-    event.dataTransfer.setData('text/plain', null);
+    isDragging = true;
+    offsetX = event.clientX - folder.getBoundingClientRect().left;
+    offsetY = event.clientY - folder.getBoundingClientRect().top;
+  }
 
-    const offsetX = event.clientX - folder.getBoundingClientRect().left;
-    const offsetY = event.clientY - folder.getBoundingClientRect().top;
+  function dragEnd() {
+    isDragging = false;
+  }
 
-    document.addEventListener('mousemove', drag);
-    document.addEventListener('mouseup', dragEnd);
-    
-    function drag(event) {
+  document.addEventListener('mousemove', drag);
+
+  function drag(event) {
+    if (isDragging) {
       folder.style.left = event.clientX - offsetX + 'px';
       folder.style.top = event.clientY - offsetY + 'px';
       text.style.left = event.clientX - offsetX + 'px';
       text.style.top = event.clientY - offsetY + 100 + 'px';
     }
-    
-    function dragEnd() {
-      document.removeEventListener('mousemove', drag);
-      document.removeEventListener('mouseup', dragEnd);
-    }
-    
   }
 </script>
 </body>
