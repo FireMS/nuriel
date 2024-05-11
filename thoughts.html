@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Folders</title>
+    <style>
+        /* Styling for the folder */
+        .folder {
+            width: 100px;
+            height: 80px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="folder" draggable="true" ondragstart="drag(event)">
+        nuL
+    </div>
+
+    <!-- JavaScript to handle folder drag and click -->
+    <script>
+        function drag(event) {
+            // Prevent default behavior (e.g., redirecting)
+            event.preventDefault();
+        }
+
+        // Handle folder click
+        document.querySelector('.folder').addEventListener('click', function() {
+            // Redirect to Google (you can change the URL)
+            window.location.href = 'https://www.google.com';
+        });
+    </script>
+</body>
+</html>
