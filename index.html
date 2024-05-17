@@ -15,6 +15,7 @@
             position: absolute;
             text-align: center;
             user-select: none;
+            font-family: 'Comic Sans MS', cursive;
         }
     </style>
 </head>
@@ -80,8 +81,12 @@
 
         function initializeFolder(draggable, text, id) {
             if (!localStorage.getItem(`folder${id}Position`)) {
-                const randomX = Math.floor(Math.random() * (window.innerWidth - 64));
-                const randomY = Math.floor(Math.random() * (window.innerHeight - 56));
+                // ensures shit dont generate outside the window
+                let randomX = Math.floor(Math.random() * (window.innerWidth - 64));
+                let randomY = Math.floor(Math.random() * (window.innerHeight - 56));
+                randomX = Math.max(0, Math.min(randomX, window.innerWidth - 64));
+                randomY = Math.max(0, Math.min(randomY, window.innerHeight - 56));
+
                 draggable.style.left = randomX + 'px';
                 draggable.style.top = randomY + 'px';
                 updateTextPosition(draggable, text);
@@ -119,16 +124,20 @@
 
         function drag(event, id) {
             if (isDragging[id]) {
-                draggables[id].style.left = event.clientX - offsets[id].x + 'px';
-                draggables[id].style.top = event.clientY - offsets[id].y + 'px';
+                let newX = event.clientX - offsets[id].x;
+                let newY = event.clientY - offsets[id].y;
+                // sets boundaries
+                newX = Math.max(0, Math.min(newX, window.innerWidth - 64));
+                newY = Math.max(0, Math.min(newY, window.innerHeight - 56));
+                draggables[id].style.left = newX + 'px';
+                draggables[id].style.top = newY + 'px';
                 updateTextPosition(draggables[id], texts[id]);
             }
         }
 
         function updateTextPosition(draggable, text) {
             const folderRect = draggable.getBoundingClientRect();
-            const textRect = text.getBoundingClientRect();
-            const textLeft = folderRect.left + (folderRect.width - textRect.width) / 2;
+            const textLeft = folderRect.left + (folderRect.width - text.offsetWidth) / 2;
             text.style.left = textLeft + 'px';
             text.style.top = folderRect.bottom + 'px';
         }
