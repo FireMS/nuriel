@@ -1,14 +1,137 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>work in progress</title>
+    <style>
+        /*draggable folder css element*/
+        .draggable {
+            width: 64px;
+            height: 56px;
+            position: absolute;
+            user-select: none;
+            background-size: cover;
+        }
+        /*label text that follows folder*/
+        .text {
+            position: absolute;
+            text-align: center;
+            user-select: none;
+        }
+    </style>
 </head>
-<body style="text-align: center;">
-  <h1>hi thanks for checking in still under work sorry :(</h1>
-  <a href="https://www.nuriel.net/thoughts.html">thoughts</a>
-  <p></p>
-  <div>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/dSbni6YRXl8" frameborder="0" allowfullscreen></iframe>
-  </div>
+<body>
+    <!--nuL attributes-->
+    <a class="hyperlink" href="https://google.com" data-href="https://google.com">
+        <div class="draggable" id="draggable1"></div>
+    </a>
+    <div class="text" id="text1">socials</div>
+
+    <!--nuP attributes-->
+    <a class="hyperlink" href="https://google.com" data-href="https://google.com">
+        <div class="draggable" id="draggable2"></div>
+    </a>
+    <div class="text" id="text2">about</div>
+
+    <!--nuB attributes-->
+    <a class="hyperlink" href="https://google.com" data-href="https://google.com">
+        <div class="draggable" id="draggable3"></div>
+    </a>
+    <div class="text" id="text3">placeholder</div>
+
+    <!--nuW attributes-->
+    <a class="hyperlink" href="https://google.com" data-href="https://google.com">
+        <div class="draggable" id="draggable4"></div>
+    </a>
+    <div class="text" id="text4">placeholder</div>
+
+    <!--nuR attributes-->
+    <a class="hyperlink" href="https://google.com" data-href="https://google.com">
+        <div class="draggable" id="draggable5"></div>
+    </a>
+    <div class="text" id="text5">placeholder</div>
+
+    <!--js script to implement draggability and hyperlink functionality-->
+    <script>
+        const imageUrls = [
+            'https://raw.githubusercontent.com/FireMS/nuriel/main/bluePixelFolder.png',
+            'https://raw.githubusercontent.com/FireMS/nuriel/main/greenPixelFolder.png',
+            'https://raw.githubusercontent.com/FireMS/nuriel/main/orangePixelFolder.png',
+            'https://raw.githubusercontent.com/FireMS/nuriel/main/purplePixelFolder.png',
+            'https://raw.githubusercontent.com/FireMS/nuriel/main/blackPixelFolder.png'
+        ];
+
+        const draggables = [];
+        const texts = [];
+        const offsets = {};
+        const isDragging = {};
+
+        for (let i = 1; i <= 5; i++) {
+            draggables[i] = document.getElementById(`draggable${i}`);
+            texts[i] = document.getElementById(`text${i}`);
+            isDragging[i] = false;
+
+            draggables[i].style.backgroundImage = `url(${imageUrls[i - 1]})`;
+
+            initializeFolder(draggables[i], texts[i], i);
+
+            draggables[i].addEventListener('mousedown', (event) => dragStart(event, i));
+            draggables[i].addEventListener('mouseup', dragEnd);
+            document.addEventListener('mousemove', (event) => drag(event, i));
+        }
+
+        function initializeFolder(draggable, text, id) {
+            if (!localStorage.getItem(`folder${id}Position`)) {
+                const randomX = Math.floor(Math.random() * (window.innerWidth - 64));
+                const randomY = Math.floor(Math.random() * (window.innerHeight - 56));
+                draggable.style.left = randomX + 'px';
+                draggable.style.top = randomY + 'px';
+                updateTextPosition(draggable, text);
+            } else {
+                const savedPosition = JSON.parse(localStorage.getItem(`folder${id}Position`));
+                draggable.style.left = savedPosition.x + 'px';
+                draggable.style.top = savedPosition.y + 'px';
+                updateTextPosition(draggable, text);
+            }
+        }
+
+        function dragStart(event, id) {
+            isDragging[id] = true;
+            event.target.closest('.hyperlink').removeAttribute('href');
+            const rect = draggables[id].getBoundingClientRect();
+            offsets[id] = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+        }
+
+        function dragEnd() {
+            for (let i = 1; i <= 5; i++) {
+                if (isDragging[i]) {
+                    isDragging[i] = false;
+                    const position = {
+                        x: parseInt(draggables[i].style.left),
+                        y: parseInt(draggables[i].style.top)
+                    };
+                    localStorage.setItem(`folder${i}Position`, JSON.stringify(position));
+                }
+            }
+
+            setTimeout(() => {
+                document.querySelectorAll('.hyperlink').forEach(link => link.setAttribute('href', link.getAttribute('data-href')));
+            }, 100);
+        }
+
+        function drag(event, id) {
+            if (isDragging[id]) {
+                draggables[id].style.left = event.clientX - offsets[id].x + 'px';
+                draggables[id].style.top = event.clientY - offsets[id].y + 'px';
+                updateTextPosition(draggables[id], texts[id]);
+            }
+        }
+
+        function updateTextPosition(draggable, text) {
+            const folderRect = draggable.getBoundingClientRect();
+            const textRect = text.getBoundingClientRect();
+            const textLeft = folderRect.left + (folderRect.width - textRect.width) / 2;
+            text.style.left = textLeft + 'px';
+            text.style.top = folderRect.bottom + 'px';
+        }
+    </script>
 </body>
 </html>
