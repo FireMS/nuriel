@@ -59,5 +59,21 @@
     </label>
     <button type="submit">Send</button>
   </form>
+
+  <script>
+    // Function to center all elements on the screen
+    function centerElements() {
+      const elementsToCenter = document.querySelectorAll('.centered');
+      elementsToCenter.forEach(element => {
+        element.style.position = 'absolute';
+        element.style.top = '50%';
+        element.style.left = '50%';
+        element.style.transform = 'translate(-50%, -50%)';
+      });
+    }
+
+    // Call the function initially
+    window.addEventListener('DOMContentLoaded', centerElements);
+  </script>
 </body>
 </html>
