@@ -21,26 +21,30 @@
         .mobile-message {
             display: none;
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'Comic Sans MS', cursive;
-            font-size: 24px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255);
+            font-size: 72px;
             text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     </style>
 </head>
 <body>
     <!--mobile not supported message-->
-    <div class="mobile-message" id="mobileMessage">Mobile not supported yet, sorry :(</div>
+    <div class="mobile-message" id="mobileMessage">mobile not supported yet, sorry :(</div>
     <!--socials attributes-->
-    <a class="hyperlink" href="https://google.com" data-href="https://google.com">
+    <a class="hyperlink" href="https://nurielmora.github.io/website/socials.html" data-href="https://nurielmora.github.io/website/socials.html">
         <div class="draggable" id="draggable1"></div>
     </a>
     <div class="text" id="text1">socials</div>
 
     <!--about attributes-->
-    <a class="hyperlink" href="https://nuriel.net/about.html" data-href="https://nuriel.net/about.html">
+    <a class="hyperlink" href="https://nurielmora.github.io/website/about.html" data-href="https://nurielmora.github.io/website/about.html">
         <div class="draggable" id="draggable2"></div>
     </a>
     <div class="text" id="text2">about</div>
@@ -65,28 +69,12 @@
 
     <!--js script to implement draggability and hyperlink functionality-->
     <script>
-
-    function isMobileDevice() {
-            return /Mobi|Android/i.test(navigator.userAgent);
-        }
-        if (isMobileDevice()) {
-            document.getElementById('mobileMessage').style.display = 'block';
-            document.querySelectorAll('.draggable, .text, .hyperlink').forEach(el => el.style.display = 'none');
-        } else {
-            const imageUrls = [
-                'https://raw.githubusercontent.com/FireMS/nuriel/main/bluePixelFolder.png',
-                'https://raw.githubusercontent.com/FireMS/nuriel/main/greenPixelFolder.png',
-                'https://raw.githubusercontent.com/FireMS/nuriel/main/orangePixelFolder.png',
-                'https://raw.githubusercontent.com/FireMS/nuriel/main/purplePixelFolder.png',
-                'https://raw.githubusercontent.com/FireMS/nuriel/main/blackPixelFolder.png'
-            ];
-
         const imageUrls = [
-          'https://raw.githubusercontent.com/FireMS/nuriel/main/bluePixelFolder.png',
-          'https://raw.githubusercontent.com/FireMS/nuriel/main/greenPixelFolder.png',
-          'https://raw.githubusercontent.com/FireMS/nuriel/main/orangePixelFolder.png',
-          'https://raw.githubusercontent.com/FireMS/nuriel/main/purplePixelFolder.png',
-          'https://raw.githubusercontent.com/FireMS/nuriel/main/blackPixelFolder.png'
+            'https://raw.githubusercontent.com/nurielmora/website/main/folderImages/bluePixelFolder.png',
+            'https://raw.githubusercontent.com/nurielmora/website/main/folderImages/greenPixelFolder.png',
+            'https://raw.githubusercontent.com/nurielmora/website/main/folderImages/orangePixelFolder.png',
+            'https://raw.githubusercontent.com/nurielmora/website/main/folderImages/purplePixelFolder.png',
+            'https://raw.githubusercontent.com/nurielmora/website/main/folderImages/blackPixelFolder.png'
         ];
 
         const draggables = [];
@@ -169,6 +157,14 @@
             const textLeft = folderRect.left + (folderRect.width - text.offsetWidth) / 2;
             text.style.left = textLeft + 'px';
             text.style.top = folderRect.bottom + 'px';
+        }
+        //checks if user is on mobile
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+            document.getElementById('mobileMessage').style.display = 'block';
+            document.getElementById('mobileMessage').style.top = '50%';
+        } else {
+            document.getElementById('mobileMessage').style.display = 'none'; // Hide the message if not on a mobile device
         }
     </script>
 </body>
