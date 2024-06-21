@@ -38,34 +38,40 @@
     <!--mobile not supported message-->
     <div class="mobile-message" id="mobileMessage">mobile not supported yet, sorry :(</div>
     <!--socials attributes-->
-    <a class="hyperlink" href="https://google.com" data-href="https://google.com">
+    <a class="hyperlink" href="https://x.com/nurielsthoughts" data-href="https://x.com/nurielsthoughts">
         <div class="draggable" id="draggable1"></div>
     </a>
     <div class="text" id="text1">twitter</div>
 
     <!--about attributes-->
-    <a class="hyperlink" href="youtube.com" data-href="youtube.com">
+    <a class="hyperlink" href="https://www.youtube.com/channel/UCnFTCyzfQBAi_KGH699Hgsg" data-href="https://www.youtube.com/channel/UCnFTCyzfQBAi_KGH699Hgsg">
         <div class="draggable" id="draggable2"></div>
     </a>
     <div class="text" id="text2">youtube</div>
 
     <!--placeholder attributes-->
-    <a class="hyperlink" href="https://google.com" data-href="https://google.com">
+    <a class="hyperlink" href="https://discord.gg/2yrUAGg5" data-href="https://discord.gg/2yrUAGg5">
         <div class="draggable" id="draggable3"></div>
     </a>
     <div class="text" id="text3">discord</div>
 
     <!--placeholder attributes-->
-    <a class="hyperlink" href="https://google.com" data-href="https://google.com">
+    <a class="hyperlink" href="https://www.tiktok.com/@nurielmorales" data-href="https://www.tiktok.com/@nurielmorales">
         <div class="draggable" id="draggable4"></div>
     </a>
     <div class="text" id="text4">tiktok</div>
 
     <!--placeholder attributes-->
-    <a class="hyperlink" href="https://google.com" data-href="https://google.com">
+    <a class="hyperlink" href="https://www.deviantart.com/firemsi" data-href="https://www.deviantart.com/firemsi">
         <div class="draggable" id="draggable5"></div>
     </a>
     <div class="text" id="text5">deviantart</div>
+
+    <!--spotify attributes-->
+    <a class="hyperlink" href="https://open.spotify.com/user/dbuvyv7t8c6cr4h3hjf5oqvdk?si=1f326b38657b4766" data-href="https://open.spotify.com/user/dbuvyv7t8c6cr4h3hjf5oqvdk?si=1f326b38657b4766">
+        <div class="draggable" id="draggable6"></div>
+    </a>
+    <div class="text" id="text6">spotify</div>
 
     <!--js script to implement draggability and hyperlink functionality-->
     <script>
@@ -74,7 +80,8 @@
             'https://raw.githubusercontent.com/nurielmora/website/main/platformLogos/youtube.png',
             'https://raw.githubusercontent.com/nurielmora/website/main/platformLogos/discord.png',
             'https://raw.githubusercontent.com/nurielmora/website/main/platformLogos/tiktok.png',
-            'https://raw.githubusercontent.com/nurielmora/website/main/platformLogos/deviantart.png'
+            'https://raw.githubusercontent.com/nurielmora/website/main/platformLogos/deviantart.png',
+            'https://raw.githubusercontent.com/nurielmora/website/main/platformLogos/spotify.png'
         ];
 
         const draggables = [];
@@ -82,7 +89,7 @@
         const offsets = {};
         const isDragging = {};
 
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= 6; i++) {
             draggables[i] = document.getElementById(`draggable${i}`);
             texts[i] = document.getElementById(`text${i}`);
             isDragging[i] = false;
@@ -123,7 +130,7 @@
         }
 
         function dragEnd() {
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= 6; i++) {
                 if (isDragging[i]) {
                     isDragging[i] = false;
                     const position = {
