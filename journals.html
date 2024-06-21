@@ -55,7 +55,7 @@
         const offsets = {};
         const isDragging = {};
 
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 3; i++) {
             draggables[i] = document.getElementById(`draggable${i}`);
             texts[i] = document.getElementById(`text${i}`);
             isDragging[i] = false;
@@ -96,7 +96,7 @@
         }
 
         function dragEnd() {
-            for (let i = 1; i <= 2; i++) {
+            for (let i = 1; i <= 3; i++) {
                 if (isDragging[i]) {
                     isDragging[i] = false;
                     const position = {
