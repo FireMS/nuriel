@@ -66,6 +66,9 @@
             draggables[i].addEventListener('mousedown', (event) => dragStart(event, i));
             draggables[i].addEventListener('mouseup', dragEnd);
             document.addEventListener('mousemove', (event) => drag(event, i));
+
+            // Adding double-click event listener
+            draggables[i].addEventListener('dblclick', (event) => handleDoubleClick(event, i));
         }
 
         function initializeFolder(draggable, text, id) {
@@ -130,6 +133,13 @@
             text.style.left = textLeft + 'px';
             text.style.top = folderRect.bottom + 'px';
         }
+
+        // Handles double-click action
+        function handleDoubleClick(event, id) {
+            // Example action: Open the linked journal in a new window
+            window.open(draggables[id].closest('a').href, '_blank');
+        }
+
         //checks if user is on mobile
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (isMobile) {
@@ -141,4 +151,3 @@
     </script>
 </body>
 </html>
-
