@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Window styling */
+        /* im a fucking GENIUS */
         .window { 
             width: 400px; 
             height: 300px; 
@@ -69,7 +69,7 @@
 </head>
 <body>
     <div class="mobile-message" id="mobileMessage">Mobile not supported yet, sorry :(</div>
-    <!-- Journal Entries -->
+    <!-- journal entries -->
     <div class="draggable" id="draggable1"></div>
     <div class="text" id="text1">6/21/24</div>
 
@@ -79,7 +79,7 @@
         const texts = [document.getElementById('text1')];
         let isDraggingWindow = false;
 
-        // Check for mobile devices
+        // mobile check
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (isMobile) {
             document.getElementById('mobileMessage').style.display = 'flex';
@@ -87,7 +87,7 @@
             document.getElementById('mobileMessage').style.display = 'none';
         }
 
-        // Initialize draggable journals
+        // drag functionality (w new double click detection)
         for (let i = 0; i < draggables.length; i++) {
             draggables[i].style.backgroundImage = `url(${imageUrls[0]})`;
             loadPosition(i);  // Load position from localStorage
@@ -97,7 +97,7 @@
             });
         }
 
-        // Function to load journal position from localStorage
+        // loads position from cookie
         function loadPosition(id) {
             const savedPosition = JSON.parse(localStorage.getItem(`folder${id}Position`));
             if (savedPosition) {
@@ -113,7 +113,7 @@
             }
         }
 
-        // Function to save position of journal to localStorage
+        // saves position to cookie
         function savePosition(id) {
             const position = {
                 x: parseInt(draggables[id].style.left),
@@ -122,7 +122,7 @@
             localStorage.setItem(`folder${id}Position`, JSON.stringify(position));
         }
 
-        // Open journal in a draggable window
+        // open journal in a draggable window
         function openJournalWindow(event, id) {
             const url = `https://nuriel.net/journals/6.21.24.txt`;
 
@@ -165,7 +165,7 @@
                 };
             };
 
-            let isResizing = false;
+            let isResizing = false; //how the fuck does this work
             resizer.onmousedown = (e) => {
                 isResizing = true;
                 document.onmousemove = (e) => {
@@ -216,7 +216,7 @@
             }
         });
 
-        // Updates the text position relative to the journal
+        // updates text relative to journals
         function updateTextPosition(draggable, text) {
             const folderRect = draggable.getBoundingClientRect();
             const textLeft = folderRect.left + (folderRect.width - text.offsetWidth) / 2;
