@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* im a fucking GENIUS */
         .window { 
             width: 400px; 
             height: 300px; 
@@ -21,6 +20,20 @@
             color: white; 
             padding: 10px; 
             cursor: move; 
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+        }
+        .window-header .close-btn {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            line-height: 20px;
+            border-radius: 2px;
+            cursor: pointer;
         }
         .window-content { 
             background-color: white; 
@@ -69,7 +82,6 @@
 </head>
 <body>
     <div class="mobile-message" id="mobileMessage">Mobile not supported yet, sorry :(</div>
-    <!-- journal entries -->
     <div class="draggable" id="draggable1"></div>
     <div class="text" id="text1">6/21/24</div>
 
@@ -78,6 +90,7 @@
         const draggables = [document.getElementById('draggable1')];
         const texts = [document.getElementById('text1')];
         let isDraggingWindow = false;
+        let journalStates = [false];
 
         // mobile check
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -124,6 +137,9 @@
 
         // open journal in a draggable window
         function openJournalWindow(event, id) {
+            if (journalStates[id]) return; // Prevent opening multiple windows for the same journal
+            journalStates[id] = true;
+
             const url = `https://nuriel.net/journals/6.21.24.txt`;
 
             const newWindow = document.createElement('div');
@@ -132,7 +148,20 @@
 
             const header = document.createElement('div');
             header.className = 'window-header';
-            header.innerText = `Journal Entry - ${texts[id].innerText}`;
+
+            const title = document.createElement('span');
+            title.innerText = `Journal Entry - ${texts[id].innerText}`;
+            header.appendChild(title);
+
+            const closeBtn = document.createElement('div');
+            closeBtn.className = 'close-btn';
+            closeBtn.innerText = 'X';
+            closeBtn.onclick = () => {
+                document.body.removeChild(newWindow);
+                journalStates[id] = false;
+            };
+            header.appendChild(closeBtn);
+
             newWindow.appendChild(header);
 
             const content = document.createElement('div');
