@@ -91,7 +91,6 @@
             align-items: center;
         }
 
-        /* Dark Mode Styles */
         body.dark-mode {
             background-color: #121212;
             color: white;
@@ -133,16 +132,13 @@
 <body>
     <div class="mobile-message" id="mobileMessage">Mobile not supported yet, sorry :(</div>
 
-    <!-- Journal 1 -->
     <div class="draggable" id="draggable1"></div>
     <div class="text" id="text1">placeholder</div>
 
-    <!-- Journal 2 -->
     <div class="draggable" id="draggable2"></div>
     <div class="text" id="text2">dialogue</div>
 
-    <!-- Dark Mode Toggle -->
-    <button class="toggle-dark-mode" id="darkModeToggle">Dark Mode</button>
+    <button class="toggle-dark-mode" id="darkModeToggle">toggle dark mode</button>
 
     <script>
         const imageUrls = ['https://raw.githubusercontent.com/FireMS/nuriel/main/journals/journal.png'];
@@ -157,7 +153,6 @@
         let isDraggingWindow = false;
         let journalStates = [false, false];
 
-        // Mobile check
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (isMobile) {
             document.getElementById('mobileMessage').style.display = 'flex';
@@ -165,7 +160,6 @@
             document.getElementById('mobileMessage').style.display = 'none';
         }
 
-        // Load position and event listeners for draggable journals
         for (let i = 0; i < draggables.length; i++) {
             draggables[i].style.backgroundImage = `url(${imageUrls[0]})`;
             loadPosition(i); // load position from cookie
@@ -175,7 +169,6 @@
             });
         }
 
-        // Load position from localStorage
         function loadPosition(id) {
             const savedPosition = JSON.parse(localStorage.getItem(`folder${id}Position`));
             if (savedPosition) {
@@ -191,7 +184,6 @@
             }
         }
 
-        // Save position to localStorage
         function savePosition(id) {
             const position = {
                 x: parseInt(draggables[id].style.left),
@@ -200,7 +192,6 @@
             localStorage.setItem(`folder${id}Position`, JSON.stringify(position));
         }
 
-        // Open journal window
         function openJournalWindow(event, id) {
             if (journalStates[id]) return;
             journalStates[id] = true;
@@ -281,7 +272,6 @@
             };
         }
 
-        // Drag start logic
         let offsets = {};
         let isDragging = [];
 
@@ -314,7 +304,7 @@
             }
         });
 
-        // Update text position relative to journals
+        // update text position relative to journals
         function updateTextPosition(draggable, text) {
             const folderRect = draggable.getBoundingClientRect();
             const textLeft = folderRect.left + (folderRect.width - text.offsetWidth) / 2;
@@ -322,7 +312,7 @@
             text.style.top = folderRect.bottom + 'px';
         }
 
-        // Dark Mode Toggle Logic
+        // generated with chatgpt i suck at programming lol
         const darkModeToggle = document.getElementById('darkModeToggle');
         darkModeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
