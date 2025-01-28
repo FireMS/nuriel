@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            margin: 0;
-            padding: 0;
             transition: background-color 0.3s, color 0.3s;
         }
-
+        /* Light Mode Styles (default) */
         .window {
             width: 400px;
             height: 300px;
@@ -29,17 +27,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        .window-header .close-btn {
-            width: 20px;
-            height: 20px;
-            background-color: red;
-            color: white;
-            font-weight: bold;
-            text-align: center;
-            line-height: 20px;
-            border-radius: 2px;
-            cursor: pointer;
         }
         .window-content {
             background-color: white;
@@ -70,41 +57,49 @@
             font-family: 'Comic Sans MS', cursive;
             user-select: none;
         }
-        .mobile-message {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            font-size: 72px;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #2C2C2C;
+            color: white;
         }
-        .mode-toggle {
+        .window.dark-mode {
+            background-color: #333;
+            border-color: #555;
+        }
+        .window-header.dark-mode {
+            background-color: #444;
+            color: #ccc;
+        }
+        .window-content.dark-mode {
+            background-color: #555;
+            color: #ddd;
+        }
+        .resizer.dark-mode {
+            background-color: #444;
+        }
+        .draggable.dark-mode {
+            background-color: #555;
+        }
+        /* Dark mode toggle button */
+        .dark-mode-toggle {
             position: fixed;
-            bottom: 10px;
-            left: 10px;
+            top: 20px;
+            right: 20px;
             background-color: #0066CC;
             color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: Arial, sans-serif;
+            padding: 10px 20px;
+            border: none;
             cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
+            font-size: 16px;
+            border-radius: 5px;
         }
-        .mode-label {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            font-family: Arial, sans-serif;
+        .dark-mode-toggle:hover {
+            background-color: #004D99;
         }
     </style>
 </head>
 <body>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
     <div class="mobile-message" id="mobileMessage">Mobile not supported yet, sorry :(</div>
 
     <!-- Journal 1 -->
@@ -114,10 +109,6 @@
     <!-- Journal 2 -->
     <div class="draggable" id="draggable2"></div>
     <div class="text" id="text2">dialogue</div>
-
-    <!-- Light/Dark Mode Toggle -->
-    <div class="mode-toggle" id="modeToggle">dark mode</div>
-    <div class="mode-label" id="modeLabel">light mode</div>
 
     <script>
         const imageUrls = ['https://raw.githubusercontent.com/FireMS/nuriel/main/journals/journal.png'];
@@ -174,26 +165,85 @@
             localStorage.setItem(`folder${id}Position`, JSON.stringify(position));
         }
 
-        // Toggle Light/Dark Mode
-        const modeToggle = document.getElementById('modeToggle');
-        const modeLabel = document.getElementById('modeLabel');
-        let isDarkMode = false;
+        // open journal in a draggable window
+        function openJournalWindow(event, id) {
+            if (journalStates[id]) return;
+            journalStates[id] = true;
 
-        modeToggle.addEventListener('click', () => {
-            isDarkMode = !isDarkMode;
-            document.body.style.backgroundColor = isDarkMode ? '#222' : '#fff';
-            document.body.style.color = isDarkMode ? '#fff' : '#000';
-            modeToggle.style.backgroundColor = isDarkMode ? '#444' : '#0066CC';
-            modeToggle.style.color = isDarkMode ? '#fff' : '#fff';
-            modeLabel.textContent = isDarkMode ? 'Dark Mode' : 'Light Mode';
-        });
+            const urls = [
+                `https://nuriel.net/journals/6.21.24.txt`,
+                `https://nuriel.net/journals/dialogue.txt`
+            ];
 
-        // Update text relative to journals
-        function updateTextPosition(draggable, text) {
-            const folderRect = draggable.getBoundingClientRect();
-            const textLeft = folderRect.left + (folderRect.width - text.offsetWidth) / 2;
-            text.style.left = textLeft + 'px';
-            text.style.top = folderRect.bottom + 'px';
+            const newWindow = document.createElement('div');
+            newWindow.className = 'window';
+            document.body.appendChild(newWindow);
+
+            const header = document.createElement('div');
+            header.className = 'window-header';
+
+            const title = document.createElement('span');
+            title.innerText = `entry - ${texts[id].innerText}`;
+            header.appendChild(title);
+
+            const closeBtn = document.createElement('div');
+            closeBtn.className = 'close-btn';
+            closeBtn.innerText = 'X';
+            closeBtn.onclick = () => {
+                document.body.removeChild(newWindow);
+                journalStates[id] = false;
+            };
+            header.appendChild(closeBtn);
+
+            newWindow.appendChild(header);
+
+            const content = document.createElement('div');
+            content.className = 'window-content';
+            newWindow.appendChild(content);
+
+            const resizer = document.createElement('div');
+            resizer.className = 'resizer';
+            newWindow.appendChild(resizer);
+
+            fetch(urls[id])
+                .then(response => response.text())
+                .then(text => {
+                    content.innerText = text;
+                });
+
+            let offsetX = 0, offsetY = 0;
+            header.onmousedown = (e) => {
+                isDraggingWindow = true;
+                offsetX = e.clientX - newWindow.getBoundingClientRect().left;
+                offsetY = e.clientY - newWindow.getBoundingClientRect().top;
+                document.onmousemove = (e) => {
+                    newWindow.style.left = e.clientX - offsetX + 'px';
+                    newWindow.style.top = e.clientY - offsetY + 'px';
+                };
+                document.onmouseup = () => {
+                    isDraggingWindow = false;
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                };
+            };
+
+            let isResizing = false;
+            resizer.onmousedown = (e) => {
+                isResizing = true;
+                document.onmousemove = (e) => {
+                    if (isResizing) {
+                        const newWidth = e.clientX - newWindow.getBoundingClientRect().left;
+                        const newHeight = e.clientY - newWindow.getBoundingClientRect().top;
+                        newWindow.style.width = newWidth + 'px';
+                        newWindow.style.height = newHeight + 'px';
+                    }
+                };
+                document.onmouseup = () => {
+                    isResizing = false;
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                };
+            };
         }
 
         let offsets = {};
@@ -227,6 +277,23 @@
                 }
             }
         });
+
+        // Update text relative to journals
+        function updateTextPosition(draggable, text) {
+            const folderRect = draggable.getBoundingClientRect();
+            const textLeft = folderRect.left + (folderRect.width - text.offsetWidth) / 2;
+            text.style.left = textLeft + 'px';
+            text.style.top = folderRect.bottom + 'px';
+        }
+
+        // Toggle Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const windows = document.querySelectorAll('.window');
+            windows.forEach(window => window.classList.toggle('dark-mode'));
+            const draggables = document.querySelectorAll('.draggable');
+            draggables.forEach(draggable => draggable.classList.toggle('dark-mode'));
+        }
     </script>
 </body>
 </html>
