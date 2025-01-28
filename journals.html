@@ -1,23 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /*draggable folder css element*/
+        .window {
+            width: 400px;
+            height: 300px;
+            border: 2px solid black;
+            background-color: #C0C0C0;
+            position: absolute;
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        .window-header {
+            background-color: #0066CC;
+            color: white;
+            padding: 10px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .window-header .close-btn {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            line-height: 20px;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        .window-content {
+            background-color: white;
+            height: calc(100% - 40px);
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+        .resizer {
+            width: 10px;
+            height: 10px;
+            background-color: #0066CC;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            cursor: se-resize;
+        }
         .draggable {
             width: 64px;
             height: 64px;
             position: absolute;
-            user-select: none;
             background-size: cover;
+            user-select: none;
         }
-        /*label text that follows folder*/
         .text {
             position: absolute;
             text-align: center;
-            user-select: none;
             font-family: 'Comic Sans MS', cursive;
+            user-select: none;
         }
-        /* mobile unsupported message */
         .mobile-message {
             display: none;
             position: fixed;
@@ -25,7 +71,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255);
+            background-color: rgba(255, 255, 255, 0.8);
             font-size: 72px;
             text-align: center;
             display: flex;
@@ -35,119 +81,190 @@
     </style>
 </head>
 <body>
-    <!--mobile not supported message-->
-    <div class="mobile-message" id="mobileMessage">mobile not supported yet, sorry :(</div>
-    
-    <!--journals attributes-->
-    <a class="hyperlink" href="https://nuriel.net/journals/dialogue.txt" data-href="https://nuriel.net/journals/dialogue.txt"> 
-        <div class="draggable" id="draggable1"></div>
-    </a>
-    <div class="text" id="text1">dialogue</div>
-    
-    <!--js script to implement draggability and hyperlink functionality-->
+    <div class="mobile-message" id="mobileMessage">Mobile not supported yet, sorry :(</div>
+
+    <!-- Journal 1 -->
+    <div class="draggable" id="draggable1"></div>
+    <div class="text" id="text1">6/21/24</div>
+
+    <!-- Journal 2 -->
+    <div class="draggable" id="draggable2"></div>
+    <div class="text" id="text2">dialogue</div>
+
     <script>
-        const imageUrls = [
-            'https://raw.githubusercontent.com/FireMS/nuriel/main/journals/journal.png'
+        const imageUrls = ['https://raw.githubusercontent.com/FireMS/nuriel/main/journals/journal.png'];
+        const draggables = [
+            document.getElementById('draggable1'),
+            document.getElementById('draggable2')
         ];
+        const texts = [
+            document.getElementById('text1'),
+            document.getElementById('text2')
+        ];
+        let isDraggingWindow = false;
+        let journalStates = [false, false];
 
-        const draggables = [];
-        const texts = [];
-        const offsets = {};
-        const isDragging = {};
-
-        for (let i = 1; i <= 1; i++) {
-            draggables[i] = document.getElementById(`draggable${i}`);
-            texts[i] = document.getElementById(`text${i}`);
-            isDragging[i] = false;
-
-            draggables[i].style.backgroundImage = `url(${imageUrls[0]})`;
-
-            initializeFolder(draggables[i], texts[i], i);
-
-            draggables[i].addEventListener('mousedown', (event) => dragStart(event, i));
-            draggables[i].addEventListener('mouseup', dragEnd);
-            document.addEventListener('mousemove', (event) => drag(event, i));
-
-            // Adding double-click event listener
-            draggables[i].addEventListener('dblclick', (event) => handleDoubleClick(event, i));
+        //mobile check
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+            document.getElementById('mobileMessage').style.display = 'flex';
+        } else {
+            document.getElementById('mobileMessage').style.display = 'none';
         }
 
-        function initializeFolder(draggable, text, id) {
-            if (!localStorage.getItem(`folder${id}Position`)) {
-                // ensures shit dont generate outside the window
+        for (let i = 0; i < draggables.length; i++) {
+            draggables[i].style.backgroundImage = `url(${imageUrls[0]})`;
+            loadPosition(i); // load position from cookie
+            draggables[i].addEventListener('dblclick', (event) => openJournalWindow(event, i));
+            draggables[i].addEventListener('mousedown', (event) => {
+                if (!isDraggingWindow) dragStart(event, i);
+            });
+        }
+
+        // Load position from localStorage
+        function loadPosition(id) {
+            const savedPosition = JSON.parse(localStorage.getItem(`folder${id}Position`));
+            if (savedPosition) {
+                draggables[id].style.left = savedPosition.x + 'px';
+                draggables[id].style.top = savedPosition.y + 'px';
+                updateTextPosition(draggables[id], texts[id]);
+            } else {
                 let randomX = Math.floor(Math.random() * (window.innerWidth - 100));
                 let randomY = Math.floor(Math.random() * (window.innerHeight - 90));
-                randomX = Math.max(0, Math.min(randomX, window.innerWidth - 100));
-                randomY = Math.max(0, Math.min(randomY, window.innerHeight - 90));
-
-                draggable.style.left = randomX + 'px';
-                draggable.style.top = randomY + 'px';
-                updateTextPosition(draggable, text);
-            } else {
-                const savedPosition = JSON.parse(localStorage.getItem(`folder${id}Position`));
-                draggable.style.left = savedPosition.x + 'px';
-                draggable.style.top = savedPosition.y + 'px';
-                updateTextPosition(draggable, text);
-            }
-        }
-
-        function dragStart(event, id) {
-            isDragging[id] = true;
-            event.target.closest('.hyperlink').removeAttribute('href');
-            const rect = draggables[id].getBoundingClientRect();
-            offsets[id] = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-        }
-
-        function dragEnd() {
-            for (let i = 1; i <= 1; i++) {
-                if (isDragging[i]) {
-                    isDragging[i] = false;
-                    const position = {
-                        x: parseInt(draggables[i].style.left),
-                        y: parseInt(draggables[i].style.top)
-                    };
-                    localStorage.setItem(`folder${i}Position`, JSON.stringify(position));
-                }
-            }
-
-            setTimeout(() => {
-                document.querySelectorAll('.hyperlink').forEach(link => link.setAttribute('href', link.getAttribute('data-href')));
-            }, 100);
-        }
-
-        function drag(event, id) {
-            if (isDragging[id]) {
-                let newX = event.clientX - offsets[id].x;
-                let newY = event.clientY - offsets[id].y;
-                // sets boundaries
-                newX = Math.max(0, Math.min(newX, window.innerWidth - 64));
-                newY = Math.max(0, Math.min(newY, window.innerHeight - 64));
-                draggables[id].style.left = newX + 'px';
-                draggables[id].style.top = newY + 'px';
+                draggables[id].style.left = randomX + 'px';
+                draggables[id].style.top = randomY + 'px';
                 updateTextPosition(draggables[id], texts[id]);
             }
         }
 
+        // Save position to localStorage
+        function savePosition(id) {
+            const position = {
+                x: parseInt(draggables[id].style.left),
+                y: parseInt(draggables[id].style.top)
+            };
+            localStorage.setItem(`folder${id}Position`, JSON.stringify(position));
+        }
+
+        // open journal in a draggable window
+        function openJournalWindow(event, id) {
+            if (journalStates[id]) return;
+            journalStates[id] = true;
+
+            const urls = [
+                `https://nuriel.net/journals/6.21.24.txt`,
+                `https://nuriel.net/journals/dialogue.txt`
+            ];
+
+            const newWindow = document.createElement('div');
+            newWindow.className = 'window';
+            document.body.appendChild(newWindow);
+
+            const header = document.createElement('div');
+            header.className = 'window-header';
+
+            const title = document.createElement('span');
+            title.innerText = `entry - ${texts[id].innerText}`;
+            header.appendChild(title);
+
+            const closeBtn = document.createElement('div');
+            closeBtn.className = 'close-btn';
+            closeBtn.innerText = 'X';
+            closeBtn.onclick = () => {
+                document.body.removeChild(newWindow);
+                journalStates[id] = false;
+            };
+            header.appendChild(closeBtn);
+
+            newWindow.appendChild(header);
+
+            const content = document.createElement('div');
+            content.className = 'window-content';
+            newWindow.appendChild(content);
+
+            const resizer = document.createElement('div');
+            resizer.className = 'resizer';
+            newWindow.appendChild(resizer);
+
+            fetch(urls[id])
+                .then(response => response.text())
+                .then(text => {
+                    content.innerText = text;
+                });
+
+            let offsetX = 0, offsetY = 0;
+            header.onmousedown = (e) => {
+                isDraggingWindow = true;
+                offsetX = e.clientX - newWindow.getBoundingClientRect().left;
+                offsetY = e.clientY - newWindow.getBoundingClientRect().top;
+                document.onmousemove = (e) => {
+                    newWindow.style.left = e.clientX - offsetX + 'px';
+                    newWindow.style.top = e.clientY - offsetY + 'px';
+                };
+                document.onmouseup = () => {
+                    isDraggingWindow = false;
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                };
+            };
+
+            let isResizing = false;
+            resizer.onmousedown = (e) => {
+                isResizing = true;
+                document.onmousemove = (e) => {
+                    if (isResizing) {
+                        const newWidth = e.clientX - newWindow.getBoundingClientRect().left;
+                        const newHeight = e.clientY - newWindow.getBoundingClientRect().top;
+                        newWindow.style.width = newWidth + 'px';
+                        newWindow.style.height = newHeight + 'px';
+                    }
+                };
+                document.onmouseup = () => {
+                    isResizing = false;
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                };
+            };
+        }
+
+        let offsets = {};
+        let isDragging = [];
+
+        function dragStart(event, id) {
+            isDragging[id] = true;
+            const rect = draggables[id].getBoundingClientRect();
+            offsets[id] = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+        }
+
+        document.addEventListener('mousemove', (event) => {
+            for (let i = 0; i < draggables.length; i++) {
+                if (isDragging[i]) {
+                    let newX = event.clientX - offsets[i].x;
+                    let newY = event.clientY - offsets[i].y;
+                    newX = Math.max(0, Math.min(newX, window.innerWidth - 64));
+                    newY = Math.max(0, Math.min(newY, window.innerHeight - 64));
+                    draggables[i].style.left = newX + 'px';
+                    draggables[i].style.top = newY + 'px';
+                    updateTextPosition(draggables[i], texts[i]);
+                }
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            for (let i = 0; i < draggables.length; i++) {
+                if (isDragging[i]) {
+                    isDragging[i] = false;
+                    savePosition(i);
+                }
+            }
+        });
+
+        // Update text relative to journals
         function updateTextPosition(draggable, text) {
             const folderRect = draggable.getBoundingClientRect();
             const textLeft = folderRect.left + (folderRect.width - text.offsetWidth) / 2;
             text.style.left = textLeft + 'px';
             text.style.top = folderRect.bottom + 'px';
-        }
-
-        // Handles double-click action
-        function handleDoubleClick(event, id) {
-            // Example action: Open the linked journal in a new window
-            window.open(draggables[id].closest('a').href, '_blank');
-        }
-
-        //checks if user is on mobile
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        if (isMobile) {
-            document.getElementById('mobileMessage').style.display = 'block';
-            document.getElementById('mobileMessage').style.top = '50%';
-        } else {
-            document.getElementById('mobileMessage').style.display = 'none';
         }
     </script>
 </body>
