@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
         .window {
             width: 400px;
             height: 300px;
@@ -78,6 +84,24 @@
             justify-content: center;
             align-items: center;
         }
+        .mode-toggle {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background-color: #0066CC;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .mode-label {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-family: Arial, sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -85,11 +109,15 @@
 
     <!-- Journal 1 -->
     <div class="draggable" id="draggable1"></div>
-    <div class="text" id="text1">6/21/24</div>
+    <div class="text" id="text1">placeholder</div>
 
     <!-- Journal 2 -->
     <div class="draggable" id="draggable2"></div>
     <div class="text" id="text2">dialogue</div>
+
+    <!-- Light/Dark Mode Toggle -->
+    <div class="mode-toggle" id="modeToggle">Toggle Mode</div>
+    <div class="mode-label" id="modeLabel">Light Mode</div>
 
     <script>
         const imageUrls = ['https://raw.githubusercontent.com/FireMS/nuriel/main/journals/journal.png'];
@@ -146,85 +174,26 @@
             localStorage.setItem(`folder${id}Position`, JSON.stringify(position));
         }
 
-        // open journal in a draggable window
-        function openJournalWindow(event, id) {
-            if (journalStates[id]) return;
-            journalStates[id] = true;
+        // Toggle Light/Dark Mode
+        const modeToggle = document.getElementById('modeToggle');
+        const modeLabel = document.getElementById('modeLabel');
+        let isDarkMode = false;
 
-            const urls = [
-                `https://nuriel.net/journals/6.21.24.txt`,
-                `https://nuriel.net/journals/dialogue.txt`
-            ];
+        modeToggle.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            document.body.style.backgroundColor = isDarkMode ? '#222' : '#fff';
+            document.body.style.color = isDarkMode ? '#fff' : '#000';
+            modeToggle.style.backgroundColor = isDarkMode ? '#444' : '#0066CC';
+            modeToggle.style.color = isDarkMode ? '#fff' : '#fff';
+            modeLabel.textContent = isDarkMode ? 'Dark Mode' : 'Light Mode';
+        });
 
-            const newWindow = document.createElement('div');
-            newWindow.className = 'window';
-            document.body.appendChild(newWindow);
-
-            const header = document.createElement('div');
-            header.className = 'window-header';
-
-            const title = document.createElement('span');
-            title.innerText = `entry - ${texts[id].innerText}`;
-            header.appendChild(title);
-
-            const closeBtn = document.createElement('div');
-            closeBtn.className = 'close-btn';
-            closeBtn.innerText = 'X';
-            closeBtn.onclick = () => {
-                document.body.removeChild(newWindow);
-                journalStates[id] = false;
-            };
-            header.appendChild(closeBtn);
-
-            newWindow.appendChild(header);
-
-            const content = document.createElement('div');
-            content.className = 'window-content';
-            newWindow.appendChild(content);
-
-            const resizer = document.createElement('div');
-            resizer.className = 'resizer';
-            newWindow.appendChild(resizer);
-
-            fetch(urls[id])
-                .then(response => response.text())
-                .then(text => {
-                    content.innerText = text;
-                });
-
-            let offsetX = 0, offsetY = 0;
-            header.onmousedown = (e) => {
-                isDraggingWindow = true;
-                offsetX = e.clientX - newWindow.getBoundingClientRect().left;
-                offsetY = e.clientY - newWindow.getBoundingClientRect().top;
-                document.onmousemove = (e) => {
-                    newWindow.style.left = e.clientX - offsetX + 'px';
-                    newWindow.style.top = e.clientY - offsetY + 'px';
-                };
-                document.onmouseup = () => {
-                    isDraggingWindow = false;
-                    document.onmousemove = null;
-                    document.onmouseup = null;
-                };
-            };
-
-            let isResizing = false;
-            resizer.onmousedown = (e) => {
-                isResizing = true;
-                document.onmousemove = (e) => {
-                    if (isResizing) {
-                        const newWidth = e.clientX - newWindow.getBoundingClientRect().left;
-                        const newHeight = e.clientY - newWindow.getBoundingClientRect().top;
-                        newWindow.style.width = newWidth + 'px';
-                        newWindow.style.height = newHeight + 'px';
-                    }
-                };
-                document.onmouseup = () => {
-                    isResizing = false;
-                    document.onmousemove = null;
-                    document.onmouseup = null;
-                };
-            };
+        // Update text relative to journals
+        function updateTextPosition(draggable, text) {
+            const folderRect = draggable.getBoundingClientRect();
+            const textLeft = folderRect.left + (folderRect.width - text.offsetWidth) / 2;
+            text.style.left = textLeft + 'px';
+            text.style.top = folderRect.bottom + 'px';
         }
 
         let offsets = {};
@@ -258,14 +227,6 @@
                 }
             }
         });
-
-        // Update text relative to journals
-        function updateTextPosition(draggable, text) {
-            const folderRect = draggable.getBoundingClientRect();
-            const textLeft = folderRect.left + (folderRect.width - text.offsetWidth) / 2;
-            text.style.left = textLeft + 'px';
-            text.style.top = folderRect.bottom + 'px';
-        }
     </script>
 </body>
 </html>
