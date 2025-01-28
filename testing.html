@@ -7,7 +7,7 @@
         body {
             transition: background-color 0.3s, color 0.3s;
         }
-        /* Light Mode Styles (default) */
+
         .window {
             width: 400px;
             height: 300px;
@@ -18,7 +18,9 @@
             user-select: none;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
             overflow: hidden;
+            transition: background-color 0.3s, border-color 0.3s;
         }
+
         .window-header {
             background-color: #0066CC;
             color: white;
@@ -28,6 +30,19 @@
             justify-content: space-between;
             align-items: center;
         }
+
+        .window-header .close-btn {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            line-height: 20px;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
         .window-content {
             background-color: white;
             height: calc(100% - 40px);
@@ -35,6 +50,7 @@
             overflow-y: auto;
             font-size: 12px;
         }
+
         .resizer {
             width: 10px;
             height: 10px;
@@ -44,6 +60,7 @@
             right: 0;
             cursor: se-resize;
         }
+
         .draggable {
             width: 64px;
             height: 64px;
@@ -51,55 +68,69 @@
             background-size: cover;
             user-select: none;
         }
+
         .text {
             position: absolute;
             text-align: center;
             font-family: 'Comic Sans MS', cursive;
             user-select: none;
         }
+
+        .mobile-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            font-size: 72px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         /* Dark Mode Styles */
         body.dark-mode {
-            background-color: #2C2C2C;
+            background-color: #121212;
             color: white;
         }
+
         .window.dark-mode {
             background-color: #333;
             border-color: #555;
         }
+
         .window-header.dark-mode {
             background-color: #444;
-            color: #ccc;
         }
+
         .window-content.dark-mode {
-            background-color: #555;
-            color: #ddd;
+            background-color: #222;
+            color: white;
         }
+
         .resizer.dark-mode {
             background-color: #444;
         }
-        .draggable.dark-mode {
-            background-color: #555;
-        }
-        /* Dark mode toggle button */
-        .dark-mode-toggle {
+
+        .toggle-dark-mode {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             background-color: #0066CC;
             color: white;
-            padding: 10px 20px;
+            padding: 10px;
             border: none;
             cursor: pointer;
-            font-size: 16px;
             border-radius: 5px;
         }
-        .dark-mode-toggle:hover {
-            background-color: #004D99;
-        }
+
     </style>
 </head>
 <body>
-    <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
     <div class="mobile-message" id="mobileMessage">Mobile not supported yet, sorry :(</div>
 
     <!-- Journal 1 -->
@@ -109,6 +140,9 @@
     <!-- Journal 2 -->
     <div class="draggable" id="draggable2"></div>
     <div class="text" id="text2">dialogue</div>
+
+    <!-- Dark Mode Toggle -->
+    <button class="toggle-dark-mode" id="darkModeToggle">Dark Mode</button>
 
     <script>
         const imageUrls = ['https://raw.githubusercontent.com/FireMS/nuriel/main/journals/journal.png'];
@@ -123,7 +157,7 @@
         let isDraggingWindow = false;
         let journalStates = [false, false];
 
-        //mobile check
+        // Mobile check
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (isMobile) {
             document.getElementById('mobileMessage').style.display = 'flex';
@@ -131,6 +165,7 @@
             document.getElementById('mobileMessage').style.display = 'none';
         }
 
+        // Load position and event listeners for draggable journals
         for (let i = 0; i < draggables.length; i++) {
             draggables[i].style.backgroundImage = `url(${imageUrls[0]})`;
             loadPosition(i); // load position from cookie
@@ -165,13 +200,13 @@
             localStorage.setItem(`folder${id}Position`, JSON.stringify(position));
         }
 
-        // open journal in a draggable window
+        // Open journal window
         function openJournalWindow(event, id) {
             if (journalStates[id]) return;
             journalStates[id] = true;
 
             const urls = [
-                `https://nuriel.net/journals/6.21.24.txt`,
+                `https://nuriel.net/journals/placeholder.txt`,
                 `https://nuriel.net/journals/dialogue.txt`
             ];
 
@@ -246,6 +281,7 @@
             };
         }
 
+        // Drag start logic
         let offsets = {};
         let isDragging = [];
 
@@ -278,7 +314,7 @@
             }
         });
 
-        // Update text relative to journals
+        // Update text position relative to journals
         function updateTextPosition(draggable, text) {
             const folderRect = draggable.getBoundingClientRect();
             const textLeft = folderRect.left + (folderRect.width - text.offsetWidth) / 2;
@@ -286,14 +322,14 @@
             text.style.top = folderRect.bottom + 'px';
         }
 
-        // Toggle Dark Mode
-        function toggleDarkMode() {
+        // Dark Mode Toggle Logic
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
-            const windows = document.querySelectorAll('.window');
-            windows.forEach(window => window.classList.toggle('dark-mode'));
-            const draggables = document.querySelectorAll('.draggable');
-            draggables.forEach(draggable => draggable.classList.toggle('dark-mode'));
-        }
+            document.querySelectorAll('.window').forEach(window => {
+                window.classList.toggle('dark-mode');
+            });
+        });
     </script>
 </body>
 </html>
