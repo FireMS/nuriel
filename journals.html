@@ -83,11 +83,9 @@
 <body>
     <div class="mobile-message" id="mobileMessage">Mobile not supported yet, sorry :(</div>
 
-    <!-- Journal 1 -->
+
     <div class="draggable" id="draggable1"></div>
     <div class="text" id="text1">placeholder</div>
-
-    <!-- Journal 2 -->
     <div class="draggable" id="draggable2"></div>
     <div class="text" id="text2">dialogue</div>
 
@@ -121,7 +119,7 @@
             });
         }
 
-        // Load position from localStorage
+        //runs on startup, loads positions from cookie
         function loadPosition(id) {
             const savedPosition = JSON.parse(localStorage.getItem(`folder${id}Position`));
             if (savedPosition) {
@@ -137,7 +135,7 @@
             }
         }
 
-        // Save position to localStorage
+        // saves to cookie
         function savePosition(id) {
             const position = {
                 x: parseInt(draggables[id].style.left),
@@ -259,7 +257,7 @@
             }
         });
 
-        // Update text relative to journals
+        // updates text relative to journals
         function updateTextPosition(draggable, text) {
             const folderRect = draggable.getBoundingClientRect();
             const textLeft = folderRect.left + (folderRect.width - text.offsetWidth) / 2;
