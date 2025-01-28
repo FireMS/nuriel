@@ -89,7 +89,7 @@
 
     <!-- Journal 2 -->
     <div class="draggable" id="draggable2"></div>
-    <div class="text" id="text2">Dialogue</div>
+    <div class="text" id="text2">dialogue</div>
 
     <script>
         const imageUrls = ['https://raw.githubusercontent.com/FireMS/nuriel/main/journals/journal.png'];
@@ -104,7 +104,7 @@
         let isDraggingWindow = false;
         let journalStates = [false, false];
 
-        // Mobile check
+        //mobile check
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (isMobile) {
             document.getElementById('mobileMessage').style.display = 'flex';
@@ -112,10 +112,9 @@
             document.getElementById('mobileMessage').style.display = 'none';
         }
 
-        // Initialize draggable elements
         for (let i = 0; i < draggables.length; i++) {
             draggables[i].style.backgroundImage = `url(${imageUrls[0]})`;
-            loadPosition(i); // Load position from localStorage
+            loadPosition(i); // load position from cookie
             draggables[i].addEventListener('dblclick', (event) => openJournalWindow(event, i));
             draggables[i].addEventListener('mousedown', (event) => {
                 if (!isDraggingWindow) dragStart(event, i);
@@ -147,9 +146,9 @@
             localStorage.setItem(`folder${id}Position`, JSON.stringify(position));
         }
 
-        // Open journal in a draggable window
+        // open journal in a draggable window
         function openJournalWindow(event, id) {
-            if (journalStates[id]) return; // Prevent opening multiple windows for the same journal
+            if (journalStates[id]) return;
             journalStates[id] = true;
 
             const urls = [
@@ -165,7 +164,7 @@
             header.className = 'window-header';
 
             const title = document.createElement('span');
-            title.innerText = `Journal Entry - ${texts[id].innerText}`;
+            title.innerText = `entry - ${texts[id].innerText}`;
             header.appendChild(title);
 
             const closeBtn = document.createElement('div');
