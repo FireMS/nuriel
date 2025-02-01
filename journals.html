@@ -88,19 +88,23 @@
     <div class="text" id="text1">vent 1/30/25</div>
     <div class="draggable" id="draggable2"></div>
     <div class="text" id="text2">dialogue</div>
+    <div class="draggable" id="draggable3"></div>
+    <div class="text" id="text3">revelation</div>
 
     <script>
         const imageUrls = ['https://raw.githubusercontent.com/FireMS/nuriel/main/journals/journal.png'];
         const draggables = [
             document.getElementById('draggable1'),
-            document.getElementById('draggable2')
+            document.getElementById('draggable2'),
+            document.getElementById('draggable3')
         ];
         const texts = [
             document.getElementById('text1'),
-            document.getElementById('text2')
+            document.getElementById('text2'),
+            document.getElementById('text3')
         ];
         let isDraggingWindow = false;
-        let journalStates = [false, false];
+        let journalStates = [false, false, false];
 
         //mobile checks
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -151,7 +155,8 @@
 
             const urls = [
                 `https://nuriel.net/journals/vent1.txt`,
-                `https://nuriel.net/journals/dialogue.txt`
+                `https://nuriel.net/journals/dialogue.txt`,
+                'https://nuriel.net/journals/dialogue.txt`'
             ];
 
             const newWindow = document.createElement('div');
