@@ -95,6 +95,8 @@
     <div class="text" id="text4">to my understanding</div>
     <div class="draggable" id="draggable5"></div>
     <div class="text" id="text5">ive been VERY wrong</div>
+    <div class="draggable" id="draggable6"></div>
+    <div class="text" id="text6">crying again</div>
     
     <script>
         const imageUrls = ['https://raw.githubusercontent.com/FireMS/nuriel/main/journals/journal.png'];
@@ -103,14 +105,16 @@
             document.getElementById('draggable2'),
             document.getElementById('draggable3'),
             document.getElementById('draggable4'),
-            document.getElementById('draggable5')
+            document.getElementById('draggable5'),
+            document.getElementById('draggable6')
         ];
         const texts = [
             document.getElementById('text1'),
             document.getElementById('text2'),
             document.getElementById('text3'),
             document.getElementById('text4'),
-            document.getElementById('text5')
+            document.getElementById('text5'),
+            document.getElementById('text6')
         ];
         let isDraggingWindow = false;
         let journalStates = [false, false, false, false];
@@ -167,7 +171,8 @@
                 `https://nuriel.net/journals/dialogue.txt`,
                 `https://nuriel.net/journals/revelation.txt`,
                 `https://nuriel.net/journals/tomyunderstanding.txt`,
-                `https://nuriel.net/journals/imwrong.txt`
+                `https://nuriel.net/journals/imwrong.txt`,
+                `https://nuriel.net/journals/cryingagain.txt`
             ];
 
             const newWindow = document.createElement('div');
